@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Globo - Notícias RSS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="header-nav">
+                    <div class="logo-container">
+                        <img src="oglobo_logo.png" alt="O Globo" class="logo">
+                        <span class="logo-text">O GLOBO</span>
+                    </div>
+                    <div class="header-actions">
+                        <button class="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <div class="social-links">
+                            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="header-bottom">
+            <div class="container">
+                <nav class="main-nav">
+                    <a href="#" class="nav-link active">Últimas</a>
+                    <a href="#" class="nav-link">Política</a>
+                    <a href="#" class="nav-link">Brasil</a>
+                    <a href="#" class="nav-link">Rio</a>
+                    <a href="#" class="nav-link">Mundo</a>
+                    <a href="#" class="nav-link">Economia</a>
+                    <a href="#" class="nav-link">Esportes</a>
+                    <a href="#" class="nav-link">Cultura</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Carregando notícias...</p>
+            </div>
+            <div class="news-grid" id="newsGrid">
+                <!-- Notícias serão inseridas aqui dinamicamente -->
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 O Globo - Leitor de Notícias RSS</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
