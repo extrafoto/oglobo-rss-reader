@@ -95,10 +95,40 @@ function createNewsCard(item) {
     let imageCredit = '';
     
     // Procurar por media:content no description
-    const mediaContentMatch = description.match(/<media:content[^>]*url="([^"]*)"[^>]*\/>/);
-    if (mediaContentMatch) {
-        imageUrl = mediaContentMatch[1];
+    function parseXML(xmlText) {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+    
+    const parseError = xmlDoc.getElementsByTagName('parsererror');
+    if (parseError.length > 0) {
+        throw new Error('Erro ao fazer parse do XML');
     }
+
+    const items = xmlDoc.getElementsByTagName('item');
+    const newsItems = [];
+
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+
+        const mediaContentTag = item.getElementsByTagName('media:content')[0];
+        const mediaCreditTag = item.getElementsByTagName('media:credit')[0];
+
+        const newsItem = {
+            title: item.getElementsByTagName('title')[0]?.textContent || '',
+            link: item.getElementsByTagName('link')[0]?.textContent || '',
+            description: item.getElementsByTagName('description')[0]?.textContent || '',
+            pubDate: item.getElementsByTagName('pubDate')[0]?.textContent || '',
+            guid: item.getElementsByTagName('guid')[0]?.textContent || '',
+            imageUrl: mediaContentTag?.getAttribute('url') || '',
+            imageCredit: mediaCreditTag?.textContent || ''
+        };
+
+        newsItems.push(newsItem);
+    }
+
+    return newsItems;
+}
+
     
     // Procurar por media:credit
     const mediaCreditMatch = description.match(/<media:credit>([^<]*)<\/media:credit>/);
@@ -198,28 +228,41 @@ async function loadNews() {
         // Ordenar por data (mais recente primeiro)
         newsItems.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
         
-        // Criar cards para cada notícia
-        const newsHTML = newsItems.map(item => createNewsCard(item)).join('');
-        newsGrid.innerHTML = newsHTML;
-        
-        console.log('Notícias renderizadas com sucesso');
-        
-    } catch (error) {
-        console.error('Erro ao carregar notícias:', error);
-        newsGrid.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: #666;">
-                <h3>Erro ao carregar notícias</h3>
-                <p>Não foi possível carregar as notícias do O Globo.</p>
-                <p>Erro: ${error.message}</p>
-                <button onclick="loadNews()" style="margin-top: 20px; padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                    Tentar novamente
-                </button>
+function createNewsCard(item) {
+    const title = item.title || 'Sem título';
+    const link = item.link || '#';
+    const pubDate = item.pubDate ? formatDate(item.pubDate) : 'Data não disponível';
+    const category = extractCategory(link);
+    const imageUrl = item.imageUrl || 'https://via.placeholder.com/400x220/3b82f6/ffffff?text=O+Globo';
+    const imageCredit = item.imageCredit || '';
+
+    return `
+        <article class="news-card">
+            <img src="${imageUrl}" 
+                 alt="${title}" 
+                 class="news-image"
+                 onerror="this.src='https://via.placeholder.com/400x220/3b82f6/ffffff?text=O+Globo'">
+            
+            <div class="news-content">
+                <div class="news-meta">
+                    <span class="news-category">${category}</span>
+                    <span class="news-date">${pubDate}</span>
+                </div>
+                
+                <h2 class="news-title">
+                    <a href="${link}" target="_blank" rel="noopener noreferrer">
+                        ${title}
+                    </a>
+                </h2>
+                
+                ${imageCredit ? `<div class="news-credit">Crédito: ${imageCredit}</div>` : ''}
+
+                ${createShareButtons(title, link)}
             </div>
-        `;
-    } finally {
-        loadingElement.style.display = 'none';
-    }
+        </article>
+    `;
 }
+
 
 // Função para atualizar notícias
 function refreshNews() {
